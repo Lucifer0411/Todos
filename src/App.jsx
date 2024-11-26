@@ -2,8 +2,26 @@ import { useEffect, useState } from 'react'
 import { TodoProvider } from './context';
 import { TodoForm } from './components';
 import TodoItem from './components/TodoItem';
+import { ThemeProvider } from './context/theme';
+import ThemeBtn from './components/ThemeBtn';
+
 
 function App() {
+
+  // setting theme for application
+  const[themeMode,setThemeMode]=useState('light')
+  const lightTheme=()=>{
+    setThemeMode('light')
+  }
+  const darkTheme=()=>{
+    setThemeMode('dark')
+  }
+  useEffect(()=>{
+    document.querySelector('html').classList.remove("light","dark")
+    document.querySelector('html').classList.add(themeMode)
+  },[themeMode])
+
+  // logic code to manage todos
   const [todos,setTodos]=useState([]);
 
   const addTodo=(todo)=>{
@@ -30,10 +48,13 @@ function App() {
     localStorage.setItem("todos",JSON.stringify(todos))
   },[todos])
   return (
-    <TodoProvider value={{todos,addTodo,updateTodo,deleteTodo,toggleComplete}}>
-    <div className="bg-[#172842] min-h-screen py-8">
+   <ThemeProvider value={{themeMode,lightTheme,darkTheme}}>
+     <TodoProvider value={{todos,addTodo,updateTodo,deleteTodo,toggleComplete}}>
+    <div className="bg-[#C5D3E8] dark:bg-[#172842] min-h-screen py-8 ">
+    <ThemeBtn className=''/>
                 <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
-                    <h1 className="text-2xl font-bold text-center mb-8 mt-2">Manage Your Todos</h1>
+
+                    <h1 className="text-slate-800 dark:text-white text-2xl font-bold text-center mb-8 mt-2">Manage Your Todos</h1>
                     <div className="mb-4">
                         {/* Todo form goes here  */}
                         <TodoForm/>
@@ -50,8 +71,10 @@ function App() {
 
                     </div>
                 </div>
+                
             </div>
     </TodoProvider>
+   </ThemeProvider>
     
   )
 }
